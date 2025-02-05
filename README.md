@@ -1,24 +1,7 @@
-# Discord Activity Boilerplate
+# Wawa Guys Starter
 
-## Setup
+![Video Thumbnail](http://img.youtube.com/vi/_yx2fh8KEak/maxresdefault.jpg?w)
 
-- WSL
+[Final code](github.com/wass08/wawa-guys-final)
 
-Probably just skip to the *Clone Project Section*
-```bash
-sudo corepack enable
-```
-
-```bash
-yarn create vite . --template react
-yarn add three @react-three/fiber @react-three/drei
-```
-
-## Clone Project
-
-[Github Link](https://github.com/MaxwellVolz/discord-activity-boilerplate)
-
-```bash
-yarn install
-yarn dev
-```
+[Watch the video tutorial](https://youtu.be/_yx2fh8KEak)

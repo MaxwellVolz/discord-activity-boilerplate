@@ -1,29 +1,21 @@
-import { KeyboardControls } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
-import { Scene } from "./components/Scene";
+import { Experience } from "./components/Experience";
 
-const keyboardMap = [
-  { name: "forward", keys: ["ArrowUp", "KeyW"] },
-  { name: "backward", keys: ["ArrowDown", "KeyS"] },
-  { name: "left", keys: ["ArrowLeft", "KeyA"] },
-  { name: "right", keys: ["ArrowRight", "KeyD"] },
-  { name: "run", keys: ["Shift"] },
-];
+import { UI } from "./components/UI";
+import { AudioManagerProvider } from "./hooks/useAudioManager";
+import { GameStateProvider } from "./hooks/useGameState";
 
 function App() {
   return (
-    <KeyboardControls map={keyboardMap}>
-      <Canvas
-        shadows
-        camera={{ position: [3, 3, 3], near: 0.1, fov: 40 }}
-        style={{
-          touchAction: "none",
-        }}
-      >
-        <color attach="background" args={["#ececec"]} />
-        <Scene />
-      </Canvas>
-    </KeyboardControls>
+    <AudioManagerProvider>
+      <GameStateProvider>
+        <Canvas shadows camera={{ position: [0, 16, 10], fov: 42 }}>
+          <color attach="background" args={["#041c0b"]} />
+          <Experience />
+        </Canvas>
+        <UI />
+      </GameStateProvider>
+    </AudioManagerProvider>
   );
 }
 
