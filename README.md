@@ -1,7 +1,21 @@
-# Wawa Guys Starter
+# Discord Activity Boilerplate
 
-![Video Thumbnail](http://img.youtube.com/vi/_yx2fh8KEak/maxresdefault.jpg?w)
+## Install
 
-[Final code](github.com/wass08/wawa-guys-final)
+```bash
+yarn
+```
 
-[Watch the video tutorial](https://youtu.be/_yx2fh8KEak)
+## Dev
+
+```bash
+yarn dev
+```
+
+## Testing Locally
+
+If running in WSL this command needs to be run from the host machine
+
+```bash
+npx cloudflared tunnel --url http://localhost:5173
+```
