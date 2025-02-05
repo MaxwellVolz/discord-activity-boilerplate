@@ -46,10 +46,8 @@ export const GameStateProvider = ({ children }) => {
     }, []);
 
     useEffect(() => {
-        console.log(`useEffect host?: ${host}`);
 
         if (!host) {
-            console.log("not the host");
             return;
         }
         if (stage === "lobby") {

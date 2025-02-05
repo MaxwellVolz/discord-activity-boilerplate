@@ -4,13 +4,15 @@ Command: npx gltfjsx@6.2.3 public/models/hexagon.glb -o src/components/Hexagon.j
 */
 
 import { useGLTF } from "@react-three/drei";
-import React from "react";
+import { RigidBody } from "@react-three/rapier";
+import React, { useRef } from "react";
 
 export function Hexagon({ color, ...props }) {
+  const rb = useRef();
   const { nodes, materials } = useGLTF("/models/hexagon.glb", "draco/gltf/");
 
   return (
-    <group {...props}>
+    <RigidBody {...props} type={"fixed"} name="hexagon" colliders="hull" >
       <mesh geometry={nodes.Hexagon.geometry} material={materials.hexagon}>
         <meshStandardMaterial
           {...materials.hexagon}
@@ -18,7 +20,7 @@ export function Hexagon({ color, ...props }) {
           transparent
         />
       </mesh>
-    </group>
+    </RigidBody>
   );
 }
 
