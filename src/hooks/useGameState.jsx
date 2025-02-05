@@ -1,5 +1,6 @@
 import { Joystick, onPlayerJoin, useMultiplayerState, isHost } from "playroomkit";
 import { createContext, useContext, useEffect, useState, useRef } from "react";
+import { randFloat } from "three/src/math/MathUtils.js";
 
 const GameStateContext = createContext();
 
@@ -37,6 +38,14 @@ export const GameStateProvider = ({ children }) => {
             });
             const newPlayer = { state, controls };
 
+            if (host) {
+                state.setState("dead", stage === "game");
+                state.setState("startingPos", {
+                    x: randFloat(-4, 4),
+                    z: randFloat(4, 4),
+                });
+            }
+
             setPlayers((players) => [...players, newPlayer]);
             state.onQuit(() => {
                 setPlayers((players) => players.filter((p) => p.state.id !== state.id));
@@ -57,8 +66,26 @@ export const GameStateProvider = ({ children }) => {
             let newTime = stage === "game" ? timer + 1 : timer - 1;
             if (newTime === 0) {
                 const nextStage = NEXT_STAGE[stage];
+                if (nextStage === "lobby" || nextStage === "countdown") {
+                    // RESET PLAYERS
+                    players.forEach((p) => {
+                        p.state.setState("dead", false);
+                        p.state.setState("pos", null);
+                        p.state.setState("rot", null);
+                    });
+                }
                 setStage(nextStage, true);
                 newTime = TIMER_STAGE[nextStage];
+            } else {
+                // CHECK GAME END
+                if (stage === "game") {
+                    const playersAlive = players.filter((p) => !p.state.getState("dead"));
+                    if (playersAlive.length < (soloGame ? 1 : 2)) {
+                        setStage("winner", true);
+                        setWinner(playersAlive[0]?.state.state.profile, true);
+                        newTime = TIMER_STAGE.winner;
+                    }
+                }
             }
             setTimer(newTime, true);
         }, 1000);

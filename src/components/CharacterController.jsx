@@ -23,6 +23,7 @@ export const CharacterController = ({
     state,
     ...props
 }) => {
+    const isDead = state.getState("dead");
     const [animation, setAnimation] = useState("idle");
     const [, get] = useKeyboardControls();
     const rb = useRef();
@@ -134,11 +135,45 @@ export const CharacterController = ({
         state.setState("pos", rb.current.translation());
         state.setState("rot", rb.current.rotation());
 
+
+        // ANIMATION
+        const movement = Math.abs(vel.x) + Math.abs(vel.z);
+        if (inTheAir.current && vel.y > 2) {
+            setAnimation("jump_up");
+            state.setState("animation", "jump_up");
+        } else if (inTheAir.current && vel.y < -5) {
+            setAnimation("fall");
+            state.setState("animation", "fall");
+        } else if (movement > 1 || inTheAir.current) {
+            setAnimation("run");
+            state.setState("animation", "run");
+        } else {
+            setAnimation("idle");
+            state.setState("animation", "idle");
+        }
+
+        // fall from too high...you die.
+        if (
+            rb.current.translation().y < -100 &&
+            !state.getState("dead")
+        ) {
+            state.setState("dead", true);
+            setState("lastDead", state.state.profile, true);
+            playAudio("Dead", true);
+        }
     });
 
+    const startingPos = state.getState("startingPos");
+    if (isDead || !startingPos) {
+        return null;
+    }
 
     return (
-        <RigidBody {...props} colliders={false}
+        <RigidBody
+            {...props}
+            position-x={startingPos.x}
+            position-z={startingPos.z}
+            colliders={false}
             canSleep={false}
             enabledRotations={[false, true, false]}
             ref={rb}
@@ -155,9 +190,12 @@ export const CharacterController = ({
             name={player ? "player" : "other"}
         >
             <group ref={cameraPosition} position={[0, 8, -16]}></group>
-            <Character scale={0.42} color={state.state.profile.color}
+            <Character scale={0.42}
+                color={state.state.profile.color}
                 name={state.state.profile.name}
-                position-y={0.2} />
+                position-y={0.2}
+                animation={animation}
+            />
             <CapsuleCollider args={[0.1, 0.38]} position={[0, 0.68, 0]} />
         </RigidBody>
     )
